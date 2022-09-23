@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "matrix.hpp"
 
 
@@ -42,5 +43,15 @@ int main()
 
     std::cout << hor * ver << std::endl;
     std::cout << ver * hor << std::endl;
+
+    std::vector<std::vector<int>> Vec = {
+        {2, 2},
+        {4, 2},
+        {6, 2}
+    };
+
+    Matrix<int> vec(Vec);
+
+    std::cout << (vec * 2) * hor << std::endl;
     return 0;
 }

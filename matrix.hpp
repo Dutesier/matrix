@@ -3,13 +3,14 @@
 
 # include <memory>
 # include <iostream>
+# include <iomanip>
+# include <vector>
 
 template <class T> class Matrix;
 template <class T> std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat);
 
 template <class T>
 class Matrix{
-    //using std::unique_ptr<T> = uniqueTptr;
 public:
     // Constructors
     Matrix() = default;
@@ -29,8 +30,21 @@ public:
         }
     }
 
+    Matrix(std::vector<std::vector<T>> rawData){ // Requires []operator and .length()
+        if (checkIntegrity(rawData)){
+            rows = rawData.size();
+            columns = rawData[0].size();
+            createData(rows, columns);
+            for (int row = 0; row < rows; ++row) {
+                for (int column = 0; column < columns; ++column) {
+                    data[row][column] = rawData[row][column];
+                }
+            }
+        }
+    }
+
     Matrix& operator=(const Matrix& other) {
-        if (this->rows) { // Matrix existed before
+        if (this->rows) { // Matrix data existed before
             if (this->rows == other.rows && this->columns == other.columns) { // Matrixes are the same size
                 copyData(other);
             } else {
@@ -79,10 +93,26 @@ public:
         return mat;
     }
 
+     Matrix operator-(const Matrix& rhs){
+        Matrix mat;
+
+        if (this->rows == rhs.rows && this->columns == rhs.columns) {
+            mat.createData(this->rows, this->columns);
+            for (int row = 0; row < this->rows; ++row) {
+                for (int column = 0; column < this->columns; ++column) {
+                    mat.data[row][column] = this->data[row][column] - rhs.data[row][column];
+                }
+            }
+            mat.rows = this->rows;
+            mat.columns = this->columns;
+        }
+        return mat;
+    }
+
     Matrix operator*(const Matrix& rhs){
         Matrix mat;
 
-       if (this->columns == rhs.rows) {
+        if (this->columns == rhs.rows) {
             mat.rows = this->rows;
             mat.columns = rhs.columns;
             mat.createData(mat.rows, mat.columns);
@@ -91,13 +121,25 @@ public:
         return mat;
     }
 
+    Matrix operator*(int scalar){
+        Matrix mat(rows, columns);
+
+        for (int row = 0; row < rows; ++row) {
+            for (int column = 0; column < columns; ++column) {
+                mat.data[row][column] = this->data[row][column] * scalar;
+            }
+        }
+        return mat;
+    }
+
     // Friends
     friend std::ostream& operator<< <T>(std::ostream& os, const Matrix<T>& mat);
 
 private:
-    T**                     data = nullptr;
-    unsigned                rows = 0;
-    unsigned                columns = 0;
+    T**                                         data = nullptr;
+    // std::unique_ptr<std::unique_ptr<T>>      data = nullptr;
+    unsigned                                    rows = 0;
+    unsigned                                    columns = 0;
 
     void    createData(unsigned r, unsigned c){
         data = new T*[r];
@@ -107,11 +149,21 @@ private:
                 data[row][column] = 0;
             }
         }
+
+        // data = std::make_unique<std::unique_ptr<T>>(r);
+        // for (int row = 0; row < r; ++row) {
+        //     data[row] = std::make_unique<T>(c);
+        //     for (int column = 0; column < c; ++column) {
+        //         data[row][column] = 0;
+        //     }
+        // }
     }
 
     void    createAndCopyData(const Matrix& other){
+        // data = std::make_unique<std::unique_ptr<T>>(other.rows);
         data = new T*[other.rows];
         for (int row = 0; row < other.rows; ++row) {
+            // data[row] = std::make_unique<T>(other.columns);
             data[row] = new T[other.columns];
             for (int column = 0; column < other.columns; ++column) {
                 data[row][column] = other.data[row][column];
@@ -165,18 +217,48 @@ private:
             }
         }
     }
+
+    bool    checkIntegrity(std::vector<std::vector<T>> rawData){
+        unsigned row_len = 0;
+        unsigned col_len = 0;
+
+        if (rawData.size() > 0) {
+            for (int i = 0; i < rawData.size(); ++i) {
+                if (i == 0)
+                    col_len = rawData[i].size();
+                else {
+                    if (col_len != rawData[i].size())
+                        return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 };
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const Matrix<T>& mat){
+    os << "Matrix of [" << mat.rows << "][" << mat.columns << "]\n";
     for (int row = 0; row < mat.rows; ++row) {
-        os << "| ";
+        row == 0 || row == mat.rows - 1 ? os << "[ " : os << "| ";
         for (int column = 0; column < mat.columns; ++column) {
-            os << mat.data[row][column] << " ";
+            os << std::setw(13) << mat.data[row][column] << " ";
         }
-        os << "|\n";
+        row == mat.rows - 1 || row == 0 ? os << "]\n" : os << "|\n";
     }
     return os;
 }
+
+
+// class MatrixBuilder {
+// public:
+//     Matrix& BuildMatrix(unsigned rows, unsigned columns){
+        
+
+//     }
+// private:
+
+// };
 
 #endif
