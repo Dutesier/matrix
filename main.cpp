@@ -5,18 +5,19 @@
 
 int main()
 {
-    Matrix<int> mat(2, 2);
+    Matrix<int, 2, 2> mat;
     mat[1][1] = 42;
     std::cout << mat << std::endl; 
 
-    Matrix<int> badMat(3, 2);
-    badMat = mat;
+    Matrix<int, 3, 2> badMat;
+    // YAY this gives an error because they are of different types
+    //badMat = mat; 
     std::cout << badMat << std::endl;
     std::cout << mat << std::endl;
-    Matrix<int> goodMat(mat);
+    Matrix<int, 2, 2> goodMat(mat);
     std::cout << goodMat << std::endl;
 
-    Matrix<int> oneMat(2, 2);
+    Matrix<int, 2, 2> oneMat;
     oneMat[0][0] = 1;
     oneMat[0][1] = 1;
     oneMat[1][0] = 1;
@@ -25,7 +26,7 @@ int main()
     std::cout << mat + oneMat << std::endl;
 
 
-    Matrix<int> hor(2, 3);
+    Matrix<int, 2, 3> hor;
     hor[0][0] = 1;
     hor[0][1] = 2;
     hor[0][2] = 3;
@@ -33,7 +34,7 @@ int main()
     hor[1][1] = 5;
     hor[1][2] = 6;
 
-    Matrix<int> ver(3, 2);
+    Matrix<int, 3, 2> ver;
     ver[0][0] = 10;
     ver[0][1] = 11;
     ver[1][0] = 20;
@@ -44,14 +45,14 @@ int main()
     std::cout << hor * ver << std::endl;
     std::cout << ver * hor << std::endl;
 
-    std::vector<std::vector<int>> Vec = {
-        {2, 2},
-        {4, 2},
-        {6, 2}
-    };
+    // std::vector<std::vector<int>> Vec = {
+    //     {2, 2},
+    //     {4, 2},
+    //     {6, 2}
+    // };
 
-    Matrix<int> vec(Vec);
+    // Matrix<int, 2, 3> vec(Vec);
 
-    std::cout << (vec * 2) * hor << std::endl;
+    std::cout << (ver * 2) * hor << std::endl;
     return 0;
 }
