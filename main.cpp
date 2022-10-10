@@ -10,6 +10,7 @@ int main()
     std::cout << mat << std::endl; 
 
     Matrix<int, 3, 2> badMat;
+    Matrix<int, 4, 5> badtwo;
     // YAY this gives an error because they are of different types
     //badMat = mat; 
     std::cout << badMat << std::endl;
@@ -54,5 +55,7 @@ int main()
     // Matrix<int, 2, 3> vec(Vec);
 
     std::cout << (ver * 2) * hor << std::endl;
+
+    std::cout << "Matrix Product Expectation: " << MatrixProductSize(2, 4, 4, 2) << std::endl;
     return 0;
 }
